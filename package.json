@@ -1,0 +1,36 @@
+{
+  "name": "sand-http",
+  "version": "0.0.2",
+  "description": "Sand HTTP Module",
+  "main": "lib/http.js",
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://gitlab.sazze.com/spirit/http.git"
+  },
+  "keywords": [
+    "http",
+    "sand"
+  ],
+  "contributors": [
+    "Kevin Smithson <ksmithson@pocketly.com>",
+    "Adam Jaso <ajaso@pocketly.com>"
+  ],
+  "license": "ISC",
+  "dependencies": {
+    "common-errors": "^0.4.17",
+    "express": "^4.10.2",
+    "jade": "^1.8.1",
+    "lodash": "^2.4.1",
+    "require-all": "^1.0.0",
+    "sand-extend": "0.0.3",
+    "sand-grain": "0.0.5"
+  },
+  "devDependencies": {
+    "mocha": "~2.0.1",
+    "should": "~4.3.0",
+    "sand": "0.0.4"
+  }
+}

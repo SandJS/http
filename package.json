@@ -1,6 +1,6 @@
 {
   "name": "sand-http",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Sand HTTP Module",
   "main": "lib/http.js",
   "scripts": {

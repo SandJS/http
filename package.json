@@ -26,12 +26,11 @@
     "lodash": "^2.4.1",
     "on-finished": "^2.1.1",
     "require-all": "^1.0.0",
-    "sand-extend": "0.0.5",
-    "sand-grain": "0.0.11"
+    "sand": "0.0.15",
+    "sand-grain": "0.0.12"
   },
   "devDependencies": {
     "mocha": "~2.0.1",
-    "should": "~4.3.0",
-    "sand": "^0.0.13"
+    "should": "~4.3.0"
   }
 }

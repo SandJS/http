@@ -26,8 +26,8 @@
     "lodash": "^2.4.1",
     "on-finished": "^2.1.1",
     "require-all": "^1.0.0",
-    "sand": "0.1.0",
-    "sand-grain": "0.1.0"
+    "sand": "0.1.1",
+    "sand-grain": "0.1.1"
   },
   "devDependencies": {
     "mocha": "~2.0.1",

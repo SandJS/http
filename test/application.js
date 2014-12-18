@@ -272,7 +272,7 @@ describe('http.init()', function() {
     it('should ' + (test.valid ? '' : 'not ') + 'initialize successfully with a directory of ' + (test.valid ? 'valid' : 'invalid') + ' controllers', function() {
       var app = sand({appPath: __dirname + '/../'});
       try {
-        app.use(http, {controllerPath: test.controllerPath}).start();
+        app.use(http, {"all": {controllerPath: test.controllerPath}}).start();
         test.valid.should.be.ok;
 
       } catch (e) {

@@ -5,6 +5,7 @@
 
 var http = require('..');
 var sand = require('sand');
+var request = require('request');
 var _ = require('lodash');
 var errors = require('common-errors');
 
@@ -283,4 +284,19 @@ describe('http.init()', function() {
       } catch (e) {}
     });
   });
+
+  it ('should have domains separate per request', function(done) {
+
+    var app = sand({appPath: __dirname + '/../'}).use(http, {"all": {controllerPath: '/test/goodControllers', port: 8005}})
+      .start(function() {
+        request('http://localhost:8005/domain', function (err, resp, body) {
+          body.should.be.eql('1');
+          done();
+          app.shutdown();
+        });
+
+      });
+
+  });
+
 });

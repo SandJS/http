@@ -159,7 +159,6 @@ describe('http.parseRoute()', function() {
       var instance = new Http;
       instance.parseRoute(test, test.route, test.action || function () {});
 
-          //console.log(test, test.file);
       if (_.isObject(test.action)) {
         _.each(test.methods, function (method) {
           validateRoute.call(instance, method, test.path, test.file);
@@ -172,13 +171,9 @@ describe('http.parseRoute()', function() {
   });
 
   function validateRoute(method, path, file) {
-    //console.log(this.routes);
-    //file = __dirname + '/goodControllers/' + file;
     this.routes.hasOwnProperty(method).should.be.ok;
     this.routes[method].should.be.type('object');
     this.routes[method][path].should.be.type('object');
-    //console.log(this.routes[method][path], file);
-    //console.log(this.routes[method][path]);
     this.routes[method][path].file.should.equal(file);
     this.routes[method][path].action.should.be.type('function');
   }
@@ -252,6 +247,7 @@ describe('http.mapController()', function() {
       true.should.be.ok;
 
     } catch (e) {
+      console.log(e);
       true.should.not.be.ok;
     }
   });
@@ -270,18 +266,36 @@ describe('http.init()', function() {
   ];
 
   _.each(tests, function(test) {
-    it('should ' + (test.valid ? '' : 'not ') + 'initialize successfully with a directory of ' + (test.valid ? 'valid' : 'invalid') + ' controllers', function() {
-      var app = sand({appPath: __dirname + '/../'});
+    it('should ' + (test.valid ? '' : 'not ') + 'initialize successfully with a directory of ' + (test.valid ? 'valid' : 'invalid') + ' controllers', function(done) {
+
+      var _isDone = false;
+
+      function _done() {
+        if (!_isDone) {
+          _isDone = true;
+          done();
+        }
+      }
+
+
+      var app = sand({appPath: __dirname + '/..'});
       try {
-        app.use(Http, {"all": {controllerPath: test.controllerPath}}).start();
-        test.valid.should.be.ok;
+        app.use(Http, {"all": {controllerPath: test.controllerPath}}).start(function () {
+
+          test.valid.should.be.ok;
+
+          try {
+            app.shutdown(function () {
+
+            });
+            _done();
+          } catch (e) { }
+        });
 
       } catch (e) {
         test.valid.should.not.be.ok;
+        _done();
       }
-      try {
-        app.shutdown();
-      } catch (e) {}
     });
   });
 

@@ -1,8 +1,8 @@
 {
   "name": "sand-http",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "Sand HTTP Module",
-  "main": "lib/http.js",
+  "main": "lib/Http.js",
   "scripts": {
     "test": "make test"
   },
@@ -23,7 +23,6 @@
     "common-errors": "^0.4.17",
     "ejs": "^2.0.8",
     "express": "^4.10.2",
-    "jade": "^1.8.1",
     "lodash": "^2.4.1",
     "on-finished": "^2.1.1",
     "require-all": "^1.0.0",

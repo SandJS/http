@@ -3,7 +3,7 @@
  * Copyright: 2014 Pocketly
  */
 
-var http = require('..');
+var Http = require('..');
 var sand = require('sand');
 var request = require('request');
 var _ = require('lodash');
@@ -47,7 +47,7 @@ describe('http.addRoute()', function() {
 
   _.each(testBadRoutes, function(test) {
     it('should fail because of ' + test.description, function() {
-      var instance = new http;
+      var instance = new Http;
       try {
         instance.addRoute(test.file, test.method, test.path, test.action);
         true.should.not.be.ok;
@@ -67,7 +67,7 @@ describe('http.addRoute()', function() {
       description: 'route already registered',
       error: errors.AlreadyInUseError
     };
-    var instance = new http;
+    var instance = new Http;
 
     try {
       instance.addRoute(test, test.method, test.path, test.action);
@@ -90,7 +90,7 @@ describe('http.addRoute()', function() {
     //var method = 'get';
     //var path = '/';
     //var action = function() {};
-    var instance = new http;
+    var instance = new Http;
     instance.addRoute(test, test.method, test.path, test.action);
 
     (instance.routes[test.method][test.path]).should.be.type('object');
@@ -156,7 +156,7 @@ describe('http.parseRoute()', function() {
 
       test.file = __dirname + '/goodControllers/' + test.file + '.js';
 
-      var instance = new http;
+      var instance = new Http;
       instance.parseRoute(test, test.route, test.action || function () {});
 
           //console.log(test, test.file);
@@ -226,7 +226,7 @@ describe('http.parseRoute()', function() {
     it('should not parse routes like "' + test.route + '"' + (test.action ? ' with multi methods "' + Object.keys(test.action).join('", "') + '"' : ''), function() {
       var file = __dirname + '/goodControllers/' + test.file;
 
-      var instance = new http;
+      var instance = new Http;
 
       try {
         instance.parseRoute(file, test.route, test.action || function () {});
@@ -245,7 +245,7 @@ describe('http.mapController()', function() {
 
     var controllerFile = __dirname + '/goodControllers/good';
     var controller = require(controllerFile);
-    var instance = new http;
+    var instance = new Http;
 
     try {
       instance.mapController(controller);
@@ -273,7 +273,7 @@ describe('http.init()', function() {
     it('should ' + (test.valid ? '' : 'not ') + 'initialize successfully with a directory of ' + (test.valid ? 'valid' : 'invalid') + ' controllers', function() {
       var app = sand({appPath: __dirname + '/../'});
       try {
-        app.use(http, {"all": {controllerPath: test.controllerPath}}).start();
+        app.use(Http, {"all": {controllerPath: test.controllerPath}}).start();
         test.valid.should.be.ok;
 
       } catch (e) {
@@ -287,7 +287,7 @@ describe('http.init()', function() {
 
   it ('should have domains separate per request', function(done) {
 
-    var app = sand({appPath: __dirname + '/../'}).use(http, {"all": {controllerPath: '/test/goodControllers', port: 8005}})
+    var app = sand({appPath: __dirname + '/../'}).use(Http, {"all": {controllerPath: '/test/goodControllers', port: 8005}})
       .start(function() {
         request('http://localhost:8005/domain', function (err, resp, body) {
           body.should.be.eql('1');
@@ -299,4 +299,85 @@ describe('http.init()', function() {
 
   });
 
+});
+
+describe('Requests', function() {
+  function testErrorResponses(sandConfig, httpConfig, fromView) {
+    fromView = fromView || false;
+    var app;
+    before(function(done) {
+      app = sand(sandConfig)
+        .use(Http, httpConfig)
+        .start(done);
+    });
+
+    after(function(done) {
+      app.shutdown(done);
+    });
+
+    function expect(code, message, done) {
+      request('http://localhost:' + httpConfig.all.port + '/' + code, function(err, res, body) {
+        try {
+          res.statusCode.should.be.eql(code);
+          body.should.eql(message + (fromView ? ' From View' : ''));
+        } catch (e) {
+          console.log(e);
+          throw e;
+        }
+        done();
+      })
+    }
+
+    it('should respond 500', function(done) {
+      expect(500, 'Internal Server Error', done);
+    });
+
+    it('should respond 404', function(done) {
+      expect(404, 'Not Found', done);
+    });
+
+    it('should respond 401', function(done) {
+      expect(401, 'Not Authorized', done);
+    });
+
+    it('should respond 403', function(done) {
+      expect(403, 'Forbidden', done);
+    });
+
+    it('should respond 400', function(done) {
+      expect(400, 'Bad Request', done);
+    });
+  }
+
+  describe('Default Responses Without Views', function() {
+    testErrorResponses({log:'*',appPath: __dirname + '/../'}, {
+      all: {
+        port: 58921,
+        controllerPath: '/test/goodControllers'
+      }
+    });
+  });
+
+  describe('Default Responses With Views', function() {
+    testErrorResponses({
+      appPath: __dirname + '/../',
+      all: {
+        log: '*'
+      }
+    }, {
+      all: {
+        port: 58921,
+        controllerPath: '/test/goodControllers',
+        view: {
+          enabled: true,
+          path: '/test/views'
+        },
+        500: 'errors/500',
+        400: 'errors/400',
+        401: 'errors/401',
+        403: 'errors/403',
+        404: 'errors/404'
+      }
+    }, true);
+  });
 });

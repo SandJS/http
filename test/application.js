@@ -6,244 +6,269 @@
 var Http = require('..');
 var sand = require('sand');
 var request = require('request');
+var async = require('async');
 var _ = require('lodash');
 var errors = require('common-errors');
 
-describe('http.addRoute()', function() {
+describe('Routes', function() {
 
-  /*
-   invalid path
-   invalid action
-   invalid http method
-   route is already registered
-   */
+  describe('addRoute()', function() {
 
-  var testBadRoutes = [
-    {
-      file: __dirname + '/goodControllers/user',
-      method: 'get',
-      path: '',
-      action: function() {},
-      description: 'invalid path',
-      error: errors.ArgumentError
-    },
-    {
-      file: __dirname + '/goodControllers/store',
-      method: 'get',
-      path: '/',
-      action: null,
-      description: 'invalid action',
-      error: errors.TypeError
-    },
-    {
-      file: __dirname + '/goodControllers/foo',
-      method: 'foo',
-      path: '/foo',
-      action: function() {},
-      description: 'invalid http method',
-      error: errors.NotSupportedError
-    }
-  ];
+    /*
+     invalid path
+     invalid action
+     invalid http method
+     route is already registered
+     */
 
-  _.each(testBadRoutes, function(test) {
-    it('should fail because of ' + test.description, function() {
-      var instance = new Http;
-      try {
-        instance.addRoute(test.file, test.method, test.path, test.action);
-        true.should.not.be.ok;
-      } catch (e) {
-        e.should.be.instanceOf(test.error);
+    var testBadRoutes = [
+      {
+        file: __dirname + '/goodControllers/user',
+        method: 'get',
+        path: '',
+        action: function() {},
+        description: 'invalid path',
+        error: errors.NotFoundError
+      },
+      {
+        file: __dirname + '/goodControllers/good',
+        method: 'get',
+        path: '/',
+        action: null,
+        description: 'invalid action',
+        error: errors.TypeError
+      },
+      {
+        file: __dirname + '/goodControllers/user',
+        method: 'foo',
+        path: '/foo',
+        action: function() {},
+        description: 'invalid http method',
+        error: errors.NotSupportedError
       }
-      //instance.routes.hasOwnProperty('get').should.not.be.ok;
+    ];
+
+    _.each(testBadRoutes, function(test) {
+      it('should fail because of ' + test.description, function() {
+        var TestController = require(test.file);
+        var testCtrl = new TestController(test.file);
+        var routes = new Http.Routes();
+        try {
+          routes.addRoute(testCtrl, test.method + ' ' + test.path, test.method, test.path, test.action);
+          true.should.not.be.ok;
+        } catch (e) {
+          e.should.be.instanceOf(test.error);
+        }
+        //instance.routes.hasOwnProperty('get').should.not.be.ok;
+      });
     });
-  });
 
-  it('should fail because already registered', function() {
-    var test = {
-      file: __dirname + '/goodControllers/foo',
-      method: 'get',
-      path: '/foo',
-      action: function() {},
-      description: 'route already registered',
-      error: errors.AlreadyInUseError
-    };
-    var instance = new Http;
+    it('should fail because already registered', function() {
+      var test = {
+        file: __dirname + '/goodControllers/user',
+        method: 'get',
+        path: '/foo',
+        action: function() {},
+        description: 'route already registered',
+        error: errors.AlreadyInUseError
+      };
 
-    try {
-      instance.addRoute(test, test.method, test.path, test.action);
-      instance.addRoute(test, test.method, test.path, test.action);
-      true.should.not.be.ok;
-
-    } catch (e) {
-      e.should.be.instanceOf(test.error);
-    }
-  });
-
-  it('should register successfully', function() {
-    var test = {
-      method: 'get',
-      file: __dirname + '/goodControllers/good',
-      path: '/',
-      action: function() {}
-    };
-    //var file = __dirname + '/goodControllers/good';
-    //var method = 'get';
-    //var path = '/';
-    //var action = function() {};
-    var instance = new Http;
-    instance.addRoute(test, test.method, test.path, test.action);
-
-    (instance.routes[test.method][test.path]).should.be.type('object');
-    (instance.routes[test.method][test.path].file).should.equal(test.file);
-  });
-
-});
-
-
-describe('http.parseRoute()', function() {
-
-  var testGoodRoutes = [
-    {
-      route: '/',
-      file: 'user',
-      method: 'get',
-      path: '/',
-    },
-    {
-      route: 'get /test',
-      file: 'test',
-      method: 'get',
-      path: '/test',
-    },
-    {
-      route: 'DELETE /test',
-      file: 'test',
-      method: 'delete',
-      path: '/test'
-    },
-    {
-      route: '/store',
-      file: 'store',
-      path: '/store',
-      action: {
-        get: function () {},
-        put: function () {},
-        post: function () {},
-        delete: function () {},
-      }
-    },
-    {
-      route: '/asdf',
-      file: 'asdf',
-      path: '/asdf',
-      methods: [
-        'get',
-        'put',
-        'post',
-        'delete'
-      ],
-      action: {
-        GET: function () {},
-        PUT: function () {},
-        POST: function () {},
-        DELETE: function () {},
-      }
-    }
-  ];
-
-  _.each(testGoodRoutes, function (test) {
-    it('should parse routes like "' + test.route + '"' + (test.action ? ' with multi methods "' + Object.keys(test.action).join('", "') + '"' : ''), function () {
-
-      test.file = __dirname + '/goodControllers/' + test.file + '.js';
-
-      var instance = new Http;
-      instance.parseRoute(test, test.route, test.action || function () {});
-
-      if (_.isObject(test.action)) {
-        _.each(test.methods, function (method) {
-          validateRoute.call(instance, method, test.path, test.file);
-        });
-      } else {
-        validateRoute.call(instance, test.method, test.path, test.file);
-      }
-
-    });
-  });
-
-  function validateRoute(method, path, file) {
-    this.routes.hasOwnProperty(method).should.be.ok;
-    this.routes[method].should.be.type('object');
-    this.routes[method][path].should.be.type('object');
-    this.routes[method][path].file.should.equal(file);
-    this.routes[method][path].action.should.be.type('function');
-  }
-
-
-  var testBadRoutes = [
-    {
-      route: 'DELETE /test',
-      action: {
-        get: function() {},
-        post: function() {}
-      }, // can't have this if we've already specified a method
-      error: errors.TypeError,
-      file: 'test',
-      method: 'delete',
-      path: '/test',
-    },
-    {
-      route: '/test',
-      action: {}, // no methods specified
-      error: errors.NotFoundError,
-      file: 'test',
-      method: 'delete',
-      path: '/test',
-    },
-    {
-      route: '',  // no method or path (route) specified
-      action: {},
-      error: errors.ArgumentError,
-      file: 'test',
-      method: 'delete',
-      path: '/test',
-    },
-    {
-      route: 'get ', // no path specified
-      action: {},
-      error: errors.NotFoundError,
-      file: 'test',
-      method: 'delete',
-      path: '/test',
-    },
-  ];
-
-  _.each(testBadRoutes, function (test) {
-    it('should not parse routes like "' + test.route + '"' + (test.action ? ' with multi methods "' + Object.keys(test.action).join('", "') + '"' : ''), function() {
-      var file = __dirname + '/goodControllers/' + test.file;
-
-      var instance = new Http;
+      var TestController = require(test.file);
+      var testCtrl = new TestController(test.file);
+      var routes = new Http.Routes();
 
       try {
-        instance.parseRoute(file, test.route, test.action || function () {});
+        routes.addRoute(testCtrl, test.method + ' ' + test.path, test.method, test.path, test.action);
+        routes.addRoute(testCtrl, test.method + ' ' + test.path, test.method, test.path, test.action);
         true.should.not.be.ok;
 
       } catch (e) {
         e.should.be.instanceOf(test.error);
       }
     });
+
+    it('should register successfully', function() {
+      var test = {
+        method: 'get',
+        file: __dirname + '/goodControllers/good',
+        path: '/',
+        action: function() {}
+      };
+
+      var TestController = require(test.file);
+      var testCtrl = new TestController(test.file);
+      var routes = new Http.Routes();
+      routes.addRoute(testCtrl, test.method + ' ' + test.path, test.method, test.path, test.action);
+
+      (routes.routes[test.method][test.path]).should.be.type('object');
+      (routes.routes[test.method][test.path].file).should.equal(test.file);
+    });
+
   });
 
+  describe('parseRoute()', function() {
+
+    var testGoodRoutes = [
+      {
+        route: '/',
+        method: 'get',
+        path: '/',
+      },
+      {
+        route: 'get /test',
+        method: 'get',
+        path: '/test',
+      },
+      {
+        route: 'DELETE /test',
+        method: 'delete',
+        path: '/test'
+      },
+      {
+        route: '/store',
+        path: '/store',
+        action: {
+          get: function () {},
+          put: function () {},
+          post: function () {},
+          delete: function () {},
+        }
+      },
+      {
+        route: '/asdf',
+        path: '/asdf',
+        methods: [
+          'get',
+          'put',
+          'post',
+          'delete'
+        ],
+        action: {
+          GET: function () {},
+          PUT: function () {},
+          POST: function () {},
+          DELETE: function () {},
+        }
+      }
+    ];
+
+    _.each(testGoodRoutes, function (test) {
+      it('should parse routes like "' + test.route + '"' + (test.action ? ' with multi methods "' + Object.keys(test.action).join('", "') + '"' : ''), function () {
+
+        test.file = __dirname + '/goodControllers/' + test.file + '.js';
+
+        // create a test controller
+        var testCtrlProto = {};
+        testCtrlProto[test.route] = test.action || _.noop;
+        var TestController = Http.Controller.extend(testCtrlProto);
+        var testCtrl = new TestController('TestController');
+        var routes = new Http.Routes();
+
+        routes.parseRoute(testCtrl, test.route);
+
+        if (_.isObject(test.action)) {
+          _.each(test.methods, function (method) {
+            validateRoute.call(routes.routes, method, test.path);
+          });
+        } else {
+          validateRoute.call(routes.routes, test.method, test.path);
+        }
+
+      });
+    });
+
+    function validateRoute(method, path) {
+      this.hasOwnProperty(method).should.be.ok;
+      this[method].should.be.type('object');
+      this[method][path].should.be.type('object');
+      this[method][path].action.should.be.type('function');
+    }
+
+
+    var testBadRoutes = [
+      {
+        route: 'DELETE /test',
+        action: {
+          get: function() {},
+          post: function() {}
+        }, // can't have this if we've already specified a method
+        error: errors.TypeError
+      },
+      {
+        route: '/test',
+        action: {}, // no methods specified
+        error: errors.NotFoundError
+      },
+      {
+        route: '',  // no method or path (route) specified
+        action: {},
+        error: errors.ArgumentError
+      },
+      {
+        route: 'get ', // no path specified
+        action: {},
+        error: errors.NotFoundError
+      }
+    ];
+
+    _.each(testBadRoutes, function (test) {
+      it('should not parse routes like "' + test.route + '"' + (test.action ? ' with multi methods "' + Object.keys(test.action).join('", "') + '"' : ''), function() {
+
+        // create a test controller
+        var testCtrlProto = {};
+        testCtrlProto[test.route] = test.action || _.noop;
+        var TestController = Http.Controller.extend(testCtrlProto);
+        var testCtrl = new TestController('TestController');
+        var routes = new Http.Routes();
+
+        try {
+          routes.parseRoute(testCtrl, test.route);
+          true.should.not.be.ok;
+
+        } catch (e) {
+          e.should.be.instanceOf(test.error);
+        }
+      });
+    });
+
+  });
 });
 
-describe('http.mapController()', function() {
+
+describe('Controller', function() {
+
+  var goodControllerRoutes = {
+    get: [
+      '/',
+      '/user',
+      '/xyz'
+    ],
+    put: [
+      '/save',
+      '/user'
+    ],
+    post: [
+      '/save',
+      '/user',
+      '/xyz'
+    ]
+  };
+
   it('should map a valid controller successfully', function() {
 
     var controllerFile = __dirname + '/goodControllers/good';
     var controller = require(controllerFile);
-    var instance = new Http;
+    controller = new controller();
+    var routes = new Http.Routes();
 
     try {
-      instance.mapController(controller);
+      controller.normalizeRoutes(routes);
+      _.each(goodControllerRoutes, function(paths, method) {
+        _.each(paths, function(path) {
+          routes.routes[method][path].should.be.a.function;
+        });
+      });
+
       true.should.be.ok;
 
     } catch (e) {
@@ -251,68 +276,114 @@ describe('http.mapController()', function() {
       true.should.not.be.ok;
     }
   });
-});
 
-describe('http.init()', function() {
-  var tests = [
-    {
-      controllerPath: '/test/goodControllers',
-      valid: true
-    },
-    {
-      controllerPath: '/test/badControllers',
-      valid: false
-    }
-  ];
+  it('should call the proper policies for each controller/action', function(done) {
 
-  _.each(tests, function(test) {
-    it('should ' + (test.valid ? '' : 'not ') + 'initialize successfully with a directory of ' + (test.valid ? 'valid' : 'invalid') + ' controllers', function(done) {
+    var controllerFile = __dirname + '/goodControllers/good';
+    var controller = require(controllerFile);
+    controller = new controller();
+    controller.normalizePolicies();
 
-      var _isDone = false;
-
-      function _done() {
-        if (!_isDone) {
-          _isDone = true;
-          done();
-        }
-      }
-
-
-      var app = sand({appPath: __dirname + '/..'});
-      try {
-        app.use(Http, {"all": {controllerPath: test.controllerPath}}).start(function () {
-
-          test.valid.should.be.ok;
-
-          try {
-            app.shutdown(function () {
-
-            });
-            _done();
-          } catch (e) { }
-        });
-
-      } catch (e) {
-        test.valid.should.not.be.ok;
-        _done();
-      }
+    _.each(goodControllerRoutes, function(paths, method) {
+      _.each(paths, function(path) {
+        (controller.policies[method] && controller.policies[method][path] ? controller.policies[method][path] : controller.before).should.be.a.function;
+      });
     });
-  });
 
-  it ('should have domains separate per request', function(done) {
 
-    var app = sand({appPath: __dirname + '/../'}).use(Http, {"all": {controllerPath: '/test/goodControllers', port: 8005}})
-      .start(function() {
-        request('http://localhost:8005/domain', function (err, resp, body) {
-          body.should.be.eql('1');
-          done();
-          app.shutdown();
+    done = _.once(done);
+
+    var app = sand({appPath: __dirname + '/..'});
+
+    try {
+      app.use(Http, {"all": {controllerPath: '/test/goodControllers', port: 58921}}).start(function () {
+
+        var tests = _.map({'/': 'public', '/user': 'before'}, function(policyName, path) {
+          return function(done2) {
+            request('http://localhost:58921' + path, function (err, resp, body) {
+              body = JSON.parse(body);
+              body.error.should.be.false;
+              body.policyName.should.eql(policyName);
+              done2();
+            });
+          };
         });
+
+        async.parallel(
+          tests,
+
+          function(err, data) {
+            app.shutdown(done)
+          });
 
       });
 
+    } catch (e) {
+      console.log(e);
+      done();
+    }
+
   });
 
+});
+
+
+describe('Http', function() {
+
+  describe('init()', function() {
+    var tests = [
+      {
+        controllerPath: '/test/goodControllers',
+        valid: true
+      },
+      {
+        controllerPath: '/test/badControllers',
+        valid: false
+      }
+    ];
+
+    _.each(tests, function(test) {
+      it('should ' + (test.valid ? '' : 'not ') + 'initialize successfully with a directory of ' + (test.valid ? 'valid' : 'invalid') + ' controllers', function(done) {
+
+        var _done = _.once(done);
+
+        var app = sand({appPath: __dirname + '/..'});
+        try {
+          app.use(Http, {"all": {controllerPath: test.controllerPath}}).start(function () {
+
+            test.valid.should.be.ok;
+
+            try {
+              app.shutdown(function () {
+
+              });
+              _done();
+            } catch (e) { }
+          });
+
+        } catch (e) {
+          //console.log(e);
+          test.valid.should.not.be.ok;
+          _done();
+        }
+      });
+    });
+
+    it ('should have domains separate per request', function(done) {
+
+      var app = sand({appPath: __dirname + '/../'}).use(Http, {"all": {controllerPath: '/test/goodControllers', port: 58921}})
+        .start(function() {
+          request('http://localhost:58921/domain', function (err, resp, body) {
+            body.should.be.eql('1');
+            app.shutdown();
+            done();
+          });
+
+        });
+
+    });
+
+  });
 });
 
 describe('Requests', function() {

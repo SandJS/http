@@ -7,37 +7,40 @@ var _ = require('lodash');
 
 
 exports = module.exports = require('../..').Controller.extend({
-  '/': function(req, res) {
-    res.json({error: false});
+
+  policies: {
+    '/': 'public'
   },
 
-  'post /save': function(req, res) {
-    res.json({error: false});
+  before: function(req, res, next) {
+    req.policyName = 'before';
+    next();
   },
 
-  'PUT /save': function(req, res) {
-
+  public: function(req, res, next) {
+    req.policyName = 'public';
+    next();
   },
+
+  '/': response,
+
+  'post /save': response,
+
+  'PUT /save': response,
 
   '/user': {
-    get: function(req, res) {
-      res.json({error: false});
-    },
-    put: function(req, res) {
-      res.json({error: false});
-    },
-    post: function(req, res) {
-      res.json({error: false});
-    }
+    get: response,
+    put: response,
+    post: response
   },
 
   '/xyz': {
-    GET: function(req, res) {
-      res.json({error: false});
-    },
+    GET: response,
 
-    POST: function(req, res) {
-      res.json({error: false});
-    }
+    POST: response
   }
 });
+
+function response(req, res) {
+  res.json({error: false, policyName: req.policyName});
+}

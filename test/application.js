@@ -298,7 +298,14 @@ describe('Controller', function() {
     try {
       app.use(Http, {"all": {controllerPath: '/test/goodControllers', port: 58921}}).start(function () {
 
-        var tests = _.map({'/': 'public', '/user': 'before'}, function(policyName, path) {
+        // valid policies include...
+        var tests = _.map({
+          '/': 'public', // a method on the controller
+          '/user': 'before', // default to the `before`
+          '/xyz': 'customFunction' // a custom function
+
+        }, function(policyName, path) {
+
           return function(done2) {
             request('http://localhost:58921' + path, function (err, resp, body) {
               body = JSON.parse(body);
@@ -307,12 +314,16 @@ describe('Controller', function() {
               done2();
             });
           };
+
         });
 
         async.parallel(
           tests,
 
-          function(err, data) {
+          function(err) {
+            if (err) {
+              console.log(err);
+            }
             app.shutdown(done)
           });
 

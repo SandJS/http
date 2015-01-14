@@ -9,7 +9,11 @@ var _ = require('lodash');
 exports = module.exports = require('../..').Controller.extend({
 
   policies: {
-    '/': 'public'
+    '/': 'public',
+    '/xyz': function(req, res, next) {
+      req.policyName = 'customFunction';
+      next();
+    }
   },
 
   before: function(req, res, next) {

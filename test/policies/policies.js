@@ -4,6 +4,7 @@
  */ 
 
 module.exports = exports = {
+
   '/': function(req, res, next) {
     req.policyName = 'public';
     next();
@@ -15,5 +16,14 @@ module.exports = exports = {
   '/xyz': function(req, res, next) {
     req.policyName = 'customFunction';
     next();
-  } // a custom function
+  }, // a custom function
+  '/skip/*': function(req, res, next) {
+    req.policyName = 'skip';
+    req.skipToAction();
+    next();
+  },
+  '/skip/dummy': function(req, res, next) {
+    req.policyName = 'dummy';
+    next();
+  }
 };

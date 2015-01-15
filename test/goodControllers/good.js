@@ -8,24 +8,6 @@ var _ = require('lodash');
 
 exports = module.exports = require('../..').Controller.extend({
 
-  policies: {
-    '/': 'public',
-    '/xyz': function(req, res, next) {
-      req.policyName = 'customFunction';
-      next();
-    }
-  },
-
-  before: function(req, res, next) {
-    req.policyName = 'before';
-    next();
-  },
-
-  public: function(req, res, next) {
-    req.policyName = 'public';
-    next();
-  },
-
   '/': response,
 
   'post /save': response,
@@ -42,7 +24,9 @@ exports = module.exports = require('../..').Controller.extend({
     GET: response,
 
     POST: response
-  }
+  },
+
+  '/skip/dummy': response
 });
 
 function response(req, res) {

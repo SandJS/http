@@ -237,6 +237,24 @@ describe('Routes', function() {
 
 describe('Controller', function() {
 
+  var app;
+  before(function(done) {
+
+    app = sand({appPath: __dirname + '/..'});
+    app.use(Http, {
+      all: {
+        controllerPath: '/test/goodControllers',
+        policyFile: '/test/policies/policies',
+        port: 58921
+      }
+    }).start(done);
+
+  });
+
+  after(function(done) {
+    app.shutdown(done);
+  });
+
   var goodControllerRoutes = {
     get: [
       '/',
@@ -281,52 +299,45 @@ describe('Controller', function() {
 
     done = _.once(done);
 
-    var app = sand({appPath: __dirname + '/..'});
+    // valid policies include...
+    var tests = _.map({
+      '/': 'public', // a method on the controller
+      '/user': 'before', // default to the `before`
+      '/xyz': 'customFunction' // a custom function
 
-    try {
-      app.use(Http, {
-        all: {
-          controllerPath: '/test/goodControllers',
-          policyFile: '/test/policies/policies',
-          port: 58921
-        }
-      }).start(function () {
+    }, function(policyName, path) {
 
-        // valid policies include...
-        var tests = _.map({
-          '/': 'public', // a method on the controller
-          '/user': 'before', // default to the `before`
-          '/xyz': 'customFunction' // a custom function
-
-        }, function(policyName, path) {
-
-          return function(done2) {
-            request('http://localhost:58921' + path, function (err, resp, body) {
-              body = JSON.parse(body);
-              body.error.should.be.false;
-              body.policyName.should.eql(policyName);
-              done2();
-            });
-          };
-
+      return function(done2) {
+        request('http://localhost:58921' + path, function (err, resp, body) {
+          body = JSON.parse(body);
+          body.error.should.be.false;
+          body.policyName.should.eql(policyName);
+          done2();
         });
+      };
 
-        async.parallel(
-          tests,
+    });
 
-          function(err) {
-            if (err) {
-              console.log(err);
-            }
-            app.shutdown(done)
-          });
+    async.parallel(
+      tests,
 
+      function(err) {
+        if (err) {
+          console.log(err);
+        }
+        done();
       });
 
-    } catch (e) {
-      done();
-    }
+  });
 
+  it('should skip all remaining policies if req.skipToAction is called', function(done) {
+
+    request('http://localhost:58921/skip/dummy', function (err, resp, body) {
+      body = JSON.parse(body);
+      body.error.should.be.false;
+      body.policyName.should.eql('skip');
+      done();
+    });
   });
 
 });

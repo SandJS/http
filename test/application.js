@@ -279,24 +279,18 @@ describe('Controller', function() {
 
   it('should call the proper policies for each controller/action', function(done) {
 
-    var controllerFile = __dirname + '/goodControllers/good';
-    var controller = require(controllerFile);
-    controller = new controller();
-    controller.normalizePolicies();
-
-    _.each(goodControllerRoutes, function(paths, method) {
-      _.each(paths, function(path) {
-        (controller.policies[method] && controller.policies[method][path] ? controller.policies[method][path] : controller.before).should.be.a.function;
-      });
-    });
-
-
     done = _.once(done);
 
     var app = sand({appPath: __dirname + '/..'});
 
     try {
-      app.use(Http, {"all": {controllerPath: '/test/goodControllers', port: 58921}}).start(function () {
+      app.use(Http, {
+        all: {
+          controllerPath: '/test/goodControllers',
+          policyFile: '/test/policies/policies',
+          port: 58921
+        }
+      }).start(function () {
 
         // valid policies include...
         var tests = _.map({
@@ -330,7 +324,6 @@ describe('Controller', function() {
       });
 
     } catch (e) {
-      console.log(e);
       done();
     }
 
@@ -382,7 +375,7 @@ describe('Http', function() {
 
     it ('should have domains separate per request', function(done) {
 
-      var app = sand({appPath: __dirname + '/../'}).use(Http, {"all": {controllerPath: '/test/goodControllers', port: 58921}})
+      var app = sand({appPath: __dirname + '/..'}).use(Http, {"all": {controllerPath: '/test/goodControllers', port: 58921}})
         .start(function() {
           request('http://localhost:58921/domain', function (err, resp, body) {
             body.should.be.eql('1');
@@ -446,7 +439,7 @@ describe('Requests', function() {
   }
 
   describe('Default Responses Without Views', function() {
-    testErrorResponses({log:'*',appPath: __dirname + '/../'}, {
+    testErrorResponses({log:'*',appPath: __dirname + '/..'}, {
       all: {
         port: 58921,
         controllerPath: '/test/goodControllers'
@@ -456,7 +449,7 @@ describe('Requests', function() {
 
   describe('Default Responses With Views', function() {
     testErrorResponses({
-      appPath: __dirname + '/../',
+      appPath: __dirname + '/..',
       all: {
         log: '*'
       }

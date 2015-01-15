@@ -237,24 +237,6 @@ describe('Routes', function() {
 
 describe('Controller', function() {
 
-  var app;
-  before(function(done) {
-
-    app = sand({appPath: __dirname + '/..'});
-    app.use(Http, {
-      all: {
-        controllerPath: '/test/goodControllers',
-        policyFile: '/test/policies/policies',
-        port: 58921
-      }
-    }).start(done);
-
-  });
-
-  after(function(done) {
-    app.shutdown(done);
-  });
-
   var goodControllerRoutes = {
     get: [
       '/',
@@ -293,6 +275,29 @@ describe('Controller', function() {
       console.log(e);
       true.should.not.be.ok;
     }
+  });
+
+});
+
+
+describe('Policies', function() {
+  
+  var app;
+  before(function(done) {
+
+    app = sand({appPath: __dirname + '/..'});
+    app.use(Http, {
+      all: {
+        controllerPath: '/test/goodControllers',
+        policyFile: '/test/policies/policies',
+        port: 58921
+      }
+    }).start(done);
+
+  });
+
+  after(function(done) {
+    app.shutdown(done);
   });
 
   it('should call the proper policies for each controller/action', function(done) {

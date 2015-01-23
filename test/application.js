@@ -345,6 +345,17 @@ describe('Policies', function() {
     });
   });
 
+  it('should call the all policies for arrays', function(done) {
+    request('http://localhost:58921/dual', function (err, resp, body) {
+      console.log(body);
+      body = JSON.parse(body);
+      body.error.should.be.false;
+      body.policy1Name.should.eql('policy1');
+      body.policy2Name.should.eql('policy2');
+      done();
+    });
+  })
+
 });
 
 

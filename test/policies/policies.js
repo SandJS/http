@@ -25,5 +25,17 @@ module.exports = exports = {
   '/skip/dummy': function(req, res, next) {
     req.policyName = 'dummy';
     next();
-  }
+  },
+
+  '/dual': [policy1, policy2]
 };
+
+function policy1(req, res, next) {
+  req.policy1Name = 'policy1';
+  next();
+}
+
+function policy2(req, res, next) {
+  req.policy2Name = 'policy2';
+  next();
+}

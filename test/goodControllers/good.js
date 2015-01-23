@@ -26,7 +26,15 @@ exports = module.exports = require('../..').Controller.extend({
     POST: response
   },
 
-  '/skip/dummy': response
+  '/skip/dummy': response,
+
+  '/dual': function(req, res) {
+    res.json({
+      error: false,
+      policy1Name: req.policy1Name,
+      policy2Name: req.policy2Name
+    });
+  }
 });
 
 function response(req, res) {

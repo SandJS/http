@@ -5,19 +5,19 @@
 
 module.exports = exports = {
 
-  '/': function(req, res, next) {
+  '/': function public(req, res, next) {
     req.policyName = 'public';
     next();
   }, // a method on the controller
-  '/user': function(req, res, next) {
+  '/user': function before(req, res, next) {
     req.policyName = 'before';
     next();
   }, // default to the `before`
-  '/xyz': function(req, res, next) {
+  '/xyz': function customFunction(req, res, next) {
     req.policyName = 'customFunction';
     next();
   }, // a custom function
-  '/skip/*': function(req, res, next) {
+  '/skip/*': function skip(req, res, next) {
     req.policyName = 'skip';
     req.skipToAction();
     next();

@@ -20,6 +20,7 @@
   ],
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.10.2",
     "common-errors": "^0.4.17",
     "ejs": "^2.0.8",
     "express": "^4.10.2",

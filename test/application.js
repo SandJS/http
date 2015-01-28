@@ -272,7 +272,7 @@ describe('Controller', function() {
       true.should.be.ok;
 
     } catch (e) {
-      console.log(e);
+      sand.log(e);
       true.should.not.be.ok;
     }
   });
@@ -328,7 +328,7 @@ describe('Policies', function() {
 
       function(err) {
         if (err) {
-          console.log(err);
+          sand.log(err);
         }
         done();
       });
@@ -347,7 +347,6 @@ describe('Policies', function() {
 
   it('should call the all policies for arrays', function(done) {
     request('http://localhost:58921/dual', function (err, resp, body) {
-      console.log(body);
       body = JSON.parse(body);
       body.error.should.be.false;
       body.policy1Name.should.eql('policy1');
@@ -437,7 +436,7 @@ describe('Requests', function() {
           res.statusCode.should.be.eql(code);
           body.should.eql(message + (fromView ? ' From View' : ''));
         } catch (e) {
-          console.log(e);
+          sand.log(e);
           throw e;
         }
         done();

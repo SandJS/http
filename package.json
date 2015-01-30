@@ -1,6 +1,6 @@
 {
   "name": "sand-http",
-  "version": "0.2.15",
+  "version": "0.2.16",
   "description": "Sand HTTP Module",
   "main": "lib/Http.js",
   "scripts": {
@@ -30,7 +30,7 @@
     "require-all": "^1.0.0",
     "sand": "0.1.5",
     "sand-grain": "0.1.2",
-    "sanitize": "0.0.5"
+    "sanitize": "0.0.6"
   },
   "devDependencies": {
     "async": "^0.9.0",

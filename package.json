@@ -30,7 +30,7 @@
     "require-all": "^1.0.0",
     "sand": "0.1.5",
     "sand-grain": "0.1.2",
-    "sanitize": "0.0.4"
+    "sanitize": "0.0.5"
   },
   "devDependencies": {
     "async": "^0.9.0",

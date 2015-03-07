@@ -1,7 +1,7 @@
 {
   "name": "sand-http",
-  "version": "0.2.19",
-  "description": "Sand HTTP Module",
+  "version": "1.0.0-beta",
+  "description": "Sand HTTP Module ES6",
   "main": "lib/Http.js",
   "scripts": {
     "test": "make test"
@@ -25,16 +25,25 @@
     "ejs": "^2.0.8",
     "express": "^4.11.2",
     "express-session": "^1.10.1",
+    "generator-bind": "^1.0.1",
+    "http-assert": "^1.1.1",
+    "http-errors": "^1.3.1",
     "lodash": "^2.4.1",
-    "on-finished": "^2.1.1",
+    "on-finished": "^2.2.0",
     "require-all": "^1.0.0",
     "sand": "^0.1.5",
-    "sand-grain": "0.1.2",
+    "sand-grain": "git+https://github.com/pocketly/sand-grain.git#es6",
     "sanitize": "0.0.7",
-    "spdy": "^1.30.1"
+    "spdy": "^1.30.1",
+    "statuses": "^1.2.1",
+    "xregexp": "^2.0.0"
   },
   "devDependencies": {
     "async": "^0.9.0",
+    "grunt": "^0.4.5",
+    "grunt-doxx": "^0.1.2",
+    "grunt-jsdoc": "^0.6.3",
+    "jsdoc": "file:../../../../../var/folders/q8/ptv78qbs3kdd8m7lq802h7rc0000gn/T/npm-16558-50447b49/git-cache-f160aa75b36e/3f1ecac83a15e8ec3c4feb5b312f536775802b93",
     "mocha": "~2.0.1",
     "request": "^2.51.0",
     "should": "~4.3.0"

@@ -1,6 +1,6 @@
 {
   "name": "sand-http",
-  "version": "1.0.0-beta",
+  "version": "1.0.0-dev",
   "description": "Sand HTTP Module ES6",
   "main": "lib/Http.js",
   "scripts": {
@@ -33,7 +33,7 @@
     "lodash": "^2.4.1",
     "on-finished": "^2.2.0",
     "require-all": "^1.0.0",
-    "sand": "^0.1.5",
+    "sand": "git+https://github.com/pocketly/sand.git#es6",
     "sand-grain": "git+https://github.com/pocketly/sand-grain.git#es6",
     "sanitize": "0.0.7",
     "spdy": "^1.30.1",

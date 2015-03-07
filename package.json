@@ -22,6 +22,7 @@
   "dependencies": {
     "body-parser": "^1.10.2",
     "common-errors": "^0.4.17",
+    "delegates": "^0.1.0",
     "ejs": "^2.0.8",
     "express": "^4.11.2",
     "express-session": "^1.10.1",
@@ -43,7 +44,6 @@
     "grunt": "^0.4.5",
     "grunt-doxx": "^0.1.2",
     "grunt-jsdoc": "^0.6.3",
-    "jsdoc": "file:../../../../../var/folders/q8/ptv78qbs3kdd8m7lq802h7rc0000gn/T/npm-16558-50447b49/git-cache-f160aa75b36e/3f1ecac83a15e8ec3c4feb5b312f536775802b93",
     "mocha": "~2.0.1",
     "request": "^2.51.0",
     "should": "~4.3.0"

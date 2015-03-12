@@ -8,7 +8,7 @@ var sandConfig = {
 describe('HTTP', function() {
   it ('should listen on port correctly', function(done) {
     var http = new HTTP();
-    var app = sand(sandConfig).use(http);
+    var app = (new sand(sandConfig)).use(http);
 
     http.on('listening', function() {
       app.shutdown(done);

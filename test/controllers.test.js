@@ -14,7 +14,7 @@ var sandConfig = {
 describe('Controllers', function() {
   var http = new HTTP();
 
-  var app = sand(sandConfig).use(http);
+  var app = (new sand(sandConfig)).use(http);
 
   before(function(done) {
     // Need to make sure sand is correct

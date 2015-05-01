@@ -5,8 +5,9 @@ var Controller = require('../../../lib/Controller');
 global.Controller = Controller;
 
 
-var app = sand({
-  appPath: __dirname
+var app = new sand({
+  appPath: __dirname,
+  log: '*'
 });
 
 app

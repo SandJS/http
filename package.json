@@ -38,7 +38,7 @@
     "require-all": "^1.0.0",
     "sand": "1.0.1",
     "sand-grain": "1.0.0",
-    "sanitize": "1.0.2",
+    "sanitize": "2.0.0",
     "spdy": "^1.31.0",
     "statuses": "^1.2.1",
     "stream-to-buffer": "^0.1.0",

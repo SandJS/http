@@ -63,6 +63,13 @@ describe('Controllers', function() {
     })
   });
 
+  it ('should skip child before', function(done) {
+    request('http://localhost:3000/TestSkip/verifySkip', function (err, response, body) {
+      body.should.be.equal('yes');
+      done();
+    })
+  });
+
   after(function(done) {
     app.shutdown(done);
   })

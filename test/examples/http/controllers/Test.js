@@ -4,31 +4,28 @@ let BaseController = require('./BaseController');
 
 class Test extends BaseController {
 
-  static before(next) {
-    let self = this;
-    super.before(function() {
-      self.inSecondBefore = true;
-      next();
-    });
+  static *before() {
+    yield super.before();
+    this.inSecondBefore = true;
   }
 
-  static named() {
+  static *named() {
     this.send('test.index');
   }
 
-  static throw500() {
+  static *throw500() {
     this.throw('Internal Server Error');
   }
 
-  static verifyBefore() {
+  static *verifyBefore() {
     this.send(this.inSecondBefore ? 'yes' : 'no');
   }
 
-  static domain() {
+  static *domain() {
     this.send(process.domain ? 'yes' : 'no');
   }
 
-  static test() {
+  static *test() {
   }
 }
 

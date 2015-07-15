@@ -1,14 +1,12 @@
 "use strict";
 
 class BaseController extends Controller {
-  static before(next) {
+  static *before() {
     this.ranBefore = true;
 
     if ('denyRoute' === this.actionName) {
       this.notAuthorized('Denied');
     }
-
-    next();
   }
 }
 

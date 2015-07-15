@@ -3,28 +3,28 @@
 var BaseController = require('./BaseController');
 
 class Index extends BaseController {
-  static index(req, res) {
+  static *index(req, res) {
     this.send('index');
   }
 
-  static test(req, res) {
+  static *test(req, res) {
     this.send('test');
   }
 
-  static multiGet(req, res) {
+  static *multiGet(req, res) {
     this.send('multiGet');
   }
 
-  static multiPost(req, res) {
+  static *multiPost(req, res) {
     this.send('multiPost');
   }
 
-  static denyRoute() {
+  static *denyRoute() {
     // Shouldn't get here
     this.send('denyRoute');
   }
 
-  static view() {
+  static *view() {
     //this.res.send('ok');
     this.render('test');
   }

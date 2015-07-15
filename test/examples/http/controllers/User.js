@@ -1,7 +1,7 @@
 "use strict";
 
 class User extends Controller {
-  static index() {
+  static *index() {
     this.send('User.index');
   }
 }

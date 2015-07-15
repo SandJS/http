@@ -1,6 +1,6 @@
 "use strict";
 class Admin extends Controller {
-  index(req, res) {
+  static *index(req, res) {
 
   }
 }

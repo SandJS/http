@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://gitlab.sazze.com/spirit/http.git"
+    "url": "https://github.com/SandJS/http.git"
   },
   "keywords": [
     "http",

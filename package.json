@@ -38,7 +38,6 @@
     "on-finished": "^2.2.0",
     "q": "^1.4.1",
     "require-all": "^1.0.0",
-    "sand": "1.0.1",
     "sand-grain": "1.0.1",
     "sanitize": "2.0.0",
     "spdy": "^1.31.0",
@@ -54,7 +53,7 @@
     "grunt-jsdoc": "^0.6.3",
     "mocha": "~2.0.1",
     "request": "^2.51.0",
-    "sand": "^1.1.3",
+    "sand": "^1.2.2",
     "should": "~4.3.0"
   },
   "publishConfig": {

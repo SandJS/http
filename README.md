@@ -56,6 +56,8 @@ Here is a sample project.
 `app.js`
 
 ```JavaScript
+"use strict";
+
 const Http = require('sand-http');
 const Sand = require('sand');
 

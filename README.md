@@ -163,22 +163,22 @@ Options include
 
 #### Config Properties
 
-| Property Name | Type | Required | Description
-| --- | --- | --- | --- | ---
-| port | integer | Yes | Indicates which port to bind when running your HTTP service. (Default: 3000)
-| view | object |  | Contains details for loading and rendering Views
-| view.layout | string |  | Contains the name of the layout to use from the `views/layout/` directory.
-| view.data(ctx) | function |  | A hook called every time a view or layout is rendered. The `ctx` argument indicates the currently executing request `Context`. This function should return an object of properties that will be passed in to the view file at render time.
-| session | object |  | Contains the details for managing Web Sessions. This option requires [sand-session](https://github.com/SandJS/session) to be included and loaded on the application. Config options are based on [express-session](https://www.npmjs.com/package/express-session). See `express-session` for config details.
-| ai | object |  | Indicates whether to use [_Adaptive Image_](#adaptive-image). This option _requires_ [gm](https://www.npmjs.com/package/gm) module and also requires the [graphics-magick](http://www.graphicsmagick.org/) OS package to be installed. (Default: uses memory store)
-| ai.useCache | boolean |  | Indicates whether to cache the individual images generated for each size. (Default: true)
-| ai.get(cacheKey, callback(err, buffer)) | function |  | A custom getter function for the cache. Use the cache key to check your cache location, and call the given callback with a buffer of the returned image.
-| ai.put(cacheKey, buffer, callback()) | function |  | A custom putter function for the cache. use the cache key to put the buffer into your cache. Invoke the callback when you're done.
-| ai.stream(path) | function |  | A custom function for loading a stream of your image file from a remote source (other than the file system). Use path to look up the image on the remote resource and return a stream of the image data.
-| beforeAllMiddleware(app) | function |  | A synchronous hook called on application init which passes an instance of the `express` server object. This allows you set custom express middleware `app.use(expressMiddleware)` that will be called with your controller actions. 
-| useBodyParser | boolean |  | Indicates whether to load the `bodyParser` config option.
-| bodyParser | object |  | Contains options to be passed into [body-parser](https://www.npmjs.com/package/body-parser). See `body-parser` for config details.
-| onError(err, ctx) | function |  | A callback that receives any request errors. Arguments include the error and the request `Context` that threw the error. You can use this to do custom error reporting (i.e. send an error summary email to the dev who wrote the broken code, etc.).
+| Property Name | Type | Required | Description |
+| ------------- | ---- | -------- | ----------- |
+| port | integer | Yes | Indicates which port to bind when running your HTTP service. (Default: 3000) |
+| view | object |  | Contains details for loading and rendering Views |
+| view.layout | string |  | Contains the name of the layout to use from the `views/layout/` directory. |
+| view.data(ctx) | function |  | A hook called every time a view or layout is rendered. The `ctx` argument indicates the currently executing request `Context`. This function should return an object of properties that will be passed in to the view file at render time. |
+| session | object |  | Contains the details for managing Web Sessions. This option requires [sand-session](https://github.com/SandJS/session) to be included and loaded on the application. Config options are based on [express-session](https://www.npmjs.com/package/express-session). See `express-session` for config details. |
+| ai | object |  | Indicates whether to use [_Adaptive Image_](#adaptive-image). This option _requires_ [gm](https://www.npmjs.com/package/gm) module and also requires the [graphics-magick](http://www.graphicsmagick.org/) OS package to be installed. (Default: uses memory store) |
+| ai.useCache | boolean |  | Indicates whether to cache the individual images generated for each size. (Default: true) |
+| ai.get(cacheKey, callback(err, buffer)) | function |  | A custom getter function for the cache. Use the cache key to check your cache location, and call the given callback with a buffer of the returned image. |
+| ai.put(cacheKey, buffer, callback()) | function |  | A custom putter function for the cache. use the cache key to put the buffer into your cache. Invoke the callback when you're done. |
+| ai.stream(path) | function |  | A custom function for loading a stream of your image file from a remote source (other than the file system). Use path to look up the image on the remote resource and return a stream of the image data. |
+| beforeAllMiddleware(app) | function |  | A synchronous hook called on application init which passes an instance of the `express` server object. This allows you set custom express middleware `app.use(expressMiddleware)` that will be called with your controller actions. |
+| useBodyParser | boolean |  | Indicates whether to load the `bodyParser` config option. |
+| bodyParser | object |  | Contains options to be passed into [body-parser](https://www.npmjs.com/package/body-parser). See `body-parser` for config details. |
+| onError(err, ctx) | function |  | A callback that receives any request errors. Arguments include the error and the request `Context` that threw the error. You can use this to do custom error reporting (i.e. send an error summary email to the dev who wrote the broken code, etc.). |
 
 ## Grain API
 
@@ -188,9 +188,9 @@ Options include
 
 #### Properties
 
-| Property Name | Type | Returns | Description
-| --- | --- | --- | ---
-| [config](#config) | object |  | The reference to the HTTP config. You can attach whatever else you want to the HTTP config and use it with `sand.http.config` anywhere in your project.
+| Property Name | Type | Returns | Description |
+| --- | --- | --- | --- |
+| [config](#config) | object |  | The reference to the HTTP config. You can attach whatever else you want to the HTTP config and use it with `sand.http.config` anywhere in your project. |
 
 ## HTTP Context API
 
